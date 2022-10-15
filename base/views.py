@@ -13,7 +13,7 @@ from .forms import RoomForm
 
 def home(request):
     rooms = Room.objects.all()
-    print(request.content_type)
+    print(request.META.get('SERVER_PORT'))
     context = {'rooms': rooms}
     return render(request, 'base/home.html', context)
 
