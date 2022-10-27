@@ -3,15 +3,41 @@
 {% block content %}
 <h1> HomePage </h1>
 
-<div>
-  
-    <div>
+<style>
+    .webpage{
+        display: grid;
+        grid-template-rows: 9fr 1fr;
+
+    }
+    .homeContainer {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr ;
+    }
+</style>
+<div class="webpage">
+<div class="homeContainer">
+    <div class="topicsContainer">
+        <hr>
+        <h2>Browse Topics</h2>
+        <hr>
+        {% for topic in topics %}
+        <a href="{% url 'home' %}?search_for={{topic.name}}"><h3>{{topic.name}}</h3></a>
+        {% endfor %}
+    </div>
+    <div class="roomsContainer">
+        <hr>
+        <h2>Rooms</h2>
+        <hr>
+        <h1>{{topic.name}}</h1>
+        <br><h3>{{roomCount}}rooms available</h3>
         <h3><a href={% url 'create-room' %}>Create A New Room</a></h3>
+        <h5>{{Search}}</h5>
+
         {% for room in rooms %}
             <div>
                 <h5><a href="{% url 'edit-room' room.id %}">Edit Room</a> &nbsp; <a href="{% url 'delete-room' room.id %}">Delete Room</a></h5>
-                <h2> <a href="{% url 'room' room.id %}">{{room.name}} </a></h2>
-                <span>Created by: @{{room.host.username}}/{{room.host.email}}</span> |
+                <h2> <a href="{% url 'room' room.id %}">{{room.name}}</a></h2>
+                <span>Created by: @{{room.host.username}}/{{room.host.email}}</span>
                 <span>
                     {% if room.host.is_superuser == 1 %} 
                         {{room.host.username}} is a Super User
@@ -22,6 +48,21 @@
             </div>
         {% endfor %}
     </div>
-
+    <div class="usersContainer">
+        <hr>
+        <h2>Users</h2>
+        <hr>
+        {% for user in users %}
+        <a href="{% url 'home' %}?search_for={{user.username}}"><h3>{{user.username}}</h3></a>
+        <h5>{{user.email}}</h5>
+        <br>
+        {% endfor %}
+        
+    </div>
+</div>
+<div class=footerContainer>
+    <hr>
+    <h3>Footer</h3>
+</div>
 </div>
 {% endblock %}

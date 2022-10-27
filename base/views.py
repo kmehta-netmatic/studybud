@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Room
+from .models import Room, Topic
+from django.contrib.auth.models import User, Group
 from .forms import RoomForm
+from django.db.models import Q
+from django.template import loader
 
 # Create your views here.
 
@@ -12,9 +15,19 @@ from .forms import RoomForm
 # ]
 
 def home(request):
-    rooms = Room.objects.all()
-    print(request.META.get('SERVER_PORT'))
-    context = {'rooms': rooms}
+    search = request.GET.get('search_for') if request.GET.get('search_for') != None else ''
+    #rooms = Room.objects.filter(host__username=search)
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=search) |
+        Q(host__username__icontains=search) |
+        Q(name__icontains=search) |
+        Q(description__icontains=search)
+        )
+    topics = Topic.objects.all()
+    users = User.objects.all()
+    print(request.POST)
+    roomCount = len(rooms)
+    context = {'rooms': rooms, 'topics': topics, 'users': users, 'search': search, 'roomCount': roomCount}
     return render(request, 'base/home.html', context)
 
 def room(request, pk): #To populate URI with room id
@@ -51,6 +64,7 @@ def updateRoom(request, pk):
 
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
+    print(request.META)
     if request.method == 'POST':
         room.delete()
         return redirect('home')
