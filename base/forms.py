@@ -5,4 +5,4 @@ class RoomForm(ModelForm):
     
     class Meta:
         model = models.Room
-        fields = ['host', 'topic', 'name']
+        fields = ['host', 'topic', 'name', 'description']
