@@ -30,7 +30,14 @@
         <hr>
         <h1>showing results for "{{search}}"</h1>
         <br><h3>Total results: {{roomCount}}</h3>
+        {% if request.user.is_superuser == 1 %}
         <h3><a href={% url 'create-room' %}>Create A New Room</a></h3>
+        {% elif request.user.is_authenticated != 1 %}
+        <h3><a href={% url 'login' %}>Create A New Room</a></h3>
+        {% elif request.user.is_superuser != 1 %}
+        <h3><a href={% url 'notAuthorized' %}>Create A New Room</a></h3>
+        {% endif %}
+
         <h5>{{Search}}</h5>
 
         {% for room in rooms %}

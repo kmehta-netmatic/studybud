@@ -3,4 +3,6 @@
 {% block content %}
 <h1> {{room.name}} </h1> Last Updated: {{room.updated}}
 <h5> Description: {{room.description}} </h5>
+<br>
+<a href="{{request.META.HTTP_REFERER}}"> Go Back </a>
 {% endblock %}
