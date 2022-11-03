@@ -1,8 +1,30 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<h1> {{room.name}} </h1> Last Updated: {{room.updated}}
+<h1> {{room.name}} </h1> Last Updated: {{room.updated|timesince}}
 <h5> Description: {{room.description}} </h5>
 <br>
-<a href="{{request.META.HTTP_REFERER}}"> Go Back </a>
+<hr>
+<div class="comment-wrapper">
+    <h3>CONVERSATION</h3><br>
+        {% for room_message in room_messages %}
+            
+            <small>User: {{room_message.user.username}} Last Update: {{room_message.updated|timesince}} ago</small><br>
+            <h4>{{room_message.body}}</h4>
+            
+        {% endfor %}
+    
+</div>
+{% if request.user.is_authenticated %}
+<div class="comment-form">
+    <form method="post" action="">
+        {% csrf_token %}
+        
+        <label>message</label>
+        <input type="text" name="message" placeholder="Message here..." />
+    </form>
+</div>
+{% endif %}
+
+
 {% endblock %}

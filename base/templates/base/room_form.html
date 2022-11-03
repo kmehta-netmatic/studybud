@@ -1,7 +1,6 @@
 {% extends 'main.html' %}
 
 {% block content %}
-<a href="{{request.META.HTTP_REFERER}}"> Go Back </a>
 <div>
     <form method="POST" action="">
         {% csrf_token %}

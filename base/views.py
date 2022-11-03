@@ -1,7 +1,7 @@
 from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Room, Topic
+from .models import Room, Topic, Messages
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -56,7 +56,15 @@ def registerPage(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
+            user = form.save(commit=False)
+            print(user)
+            user.username = user.username.lower()
+            print(user)
             form.save()
+            login(request, user)
+            return redirect(home)
+        else:
+            messages.error(request, 'An error occured during registration. Please try again')
 
     return render(request, 'base/login_register.html', context)
 
@@ -86,8 +94,18 @@ def room(request, pk): #To populate URI with room id
     #     if i['id'] == pk:
     #         room = i
     rooms = Room.objects.get(id=pk)
-    context = {'room': rooms}
+    room_messages = rooms.messages_set.all().order_by('created')
+    if request.method == 'POST':
+        new_message = Messages.objects.create(
+            user=request.user,
+            room=rooms,
+            body=request.POST.get('message')
+        )
+        return redirect('room', pk)
+    context = {'room': rooms, 'room_messages': room_messages}
     return render(request, 'base/room.html', context)
+
+
 
 @login_required(login_url='login')
 def createRoom(request):
