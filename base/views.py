@@ -121,29 +121,51 @@ def createRoom(request):
 
 @login_required(login_url='login')
 def updateRoom(request, pk):
-
+    
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
+    print(request.user.is_superuser)
+    print(request.user)
+    print(room.host)
+    if request.user==room.host or request.user.is_superuser==1:
 
-    if request.user != room.host:
+        if request.method =='POST':
+            form = RoomForm(request.POST, instance=room)
+            if form.is_valid():
+                form.save()
+                return redirect('home')         
+        context = {'forms': form}
+        return render(request, 'base/room_form.html', context)
+
+    else:
         return redirect('notAuthorized')
-
-    if request.method =='POST':
-        form = RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')         
-    context = {'forms': form}
-    return render(request, 'base/room_form.html', context)
 
 @login_required(login_url='login')
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk) 
 
-    if request.user != room.host:
+    if request.user==room.host or request.user.is_superuser==1:
+
+        if request.method == 'POST':
+            room.delete()
+            return redirect('home')
+        return render(request, 'base/delete.html', {'obj': room})
+
+    else:
         return redirect('notAuthorized')
 
-    if request.method == 'POST':
-        room.delete()
-        return redirect('home')
-    return render(request, 'base/delete.html', {'obj': room})
+
+@login_required(login_url='login')
+def deleteComment(request, pk):
+    room_message = Messages.objects.get(id=pk) 
+    print(room_message.room.host)
+    print(request.user)
+    if request.user==room_message.user or request.user==room_message.room.host or request.user.is_superuser==1:
+        
+        if request.method == 'POST':
+            room_message.delete()
+            return redirect('home')
+        return render(request, 'base/delete.html', {'obj': room_message})
+    
+    else:
+        return redirect('notAuthorized')

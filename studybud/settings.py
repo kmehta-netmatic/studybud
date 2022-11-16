@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'studybud.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'StudyBudProject',
+        'USER': 'root',
+        'PASSWORD':'KUN@l140529',
+        'HOST': '172.17.0.4',
+        'PORT': '3306'
     }
 }
 
@@ -115,7 +119,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-ALLOWED_HOSTS = ['10.10.10.45', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['10.10.10.19', 'localhost', '127.0.0.1']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

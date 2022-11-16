@@ -10,5 +10,6 @@ urlpatterns = [
     path('create-room/', views.createRoom, name='create-room'),
     path('edit-room/<int:pk>/', views.updateRoom, name='edit-room'),
     path('delete-room/<int:pk>/', views.deleteRoom, name='delete-room'),
+    path('delete-message/<int:pk>/', views.deleteComment, name='delete-message'),
     path('notAuthorized/', views.notAuthorized, name='notAuthorized'),
 ]
