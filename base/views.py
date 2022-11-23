@@ -74,7 +74,6 @@ def notAuthorized(request):
 
 def home(request):
     search = request.GET.get('search_for') if request.GET.get('search_for') != None else ''
-    #rooms = Room.objects.filter(host__username=search)
     rooms = Room.objects.filter(
         Q(topic__name__icontains=search) |
         Q(host__username__icontains=search) |
@@ -83,9 +82,14 @@ def home(request):
         )
     topics = Topic.objects.all()
     users = User.objects.all()
+    room_messages = Messages.objects.filter(
+        Q(room__topic__name__icontains=search) |
+        Q(user__username__icontains=search) |
+        Q(created__icontains=search)
+    )
     print(request.user.is_superuser)
     roomCount = len(rooms)
-    context = {'rooms': rooms, 'topics': topics, 'users': users, 'search': search, 'roomCount': roomCount}
+    context = {'rooms': rooms, 'topics': topics, 'users': users, 'search': search, 'roomCount': roomCount, 'room_messages': room_messages}
     return render(request, 'base/home.html', context)
 
 def room(request, pk): #To populate URI with room id

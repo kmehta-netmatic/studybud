@@ -14,7 +14,7 @@ Created By: {{room.host}}
             <h4>{{room_message.body}}</h4>
             <a href="{% url 'delete-message' room_message.id %}">Delete Comment</a></h5>
         {% endfor %}
-    
+    <br><hr>
 </div>
 {% if request.user.is_authenticated %}
 <div class="comment-form">

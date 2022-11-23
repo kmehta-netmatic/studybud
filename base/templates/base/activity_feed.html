@@ -1,0 +1,11 @@
+<div>
+    <hr>
+    <h2>Comments</h2>
+    <hr>
+    {% for room_message in room_messages %}
+    <h4>@{{room_message.user.username}}</h4>
+    <h5>{{room_message.body}}</h5>
+    <h5>{{room_message.created|timesince}} ago</h5>
+    <hr>
+    {% endfor %}
+</div>
