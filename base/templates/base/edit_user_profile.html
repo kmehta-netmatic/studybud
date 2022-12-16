@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h2>{{user_details.username}}</h2>
+<div>
+    {% if page == 'updateSettings' %} 
+        <form method="POST" action="">
+            {% csrf_token %}
+            <table>
+                <tr>   
+                <th><p align="left"><label>Username: </label></p></th>
+                <th><p align="right"><input type="text" name="username" placeholder="Username" value="{{ user_details.username }}" /></p></th>
+                <th><p align="center">{{ user_details.username }}</p></th>
+                </tr>
+                <tr>   
+                <th><p align="left"><label>First Name: </label></p></th>
+                <th><p align="right"><input type="text" name="firstname" placeholder="First Name" value="{{ user_details.first_name }}" /></p></th>
+                <th><p align="center">{{ user_details.first_name }}</p></th>
+                </tr>
+                <tr>
+                <th><p align="left"><label>Last Name:</label></p></th>
+                <th><p align="right"><input type="text" name="lastname" placeholder="Last Name" value="{{ user_details.last_name }}" /></p></th>
+                <th><p align="center">{{ user_details.last_name }}</p></th>
+                </tr>
+                <tr>  
+                <th><p align="left"><label>Email Address:</label></p></th>
+                <th><p align="right"><input type="email" name="email" placeholder="Email Address" value="{{ user_details.email }}" /></p></th>
+                <th><p align="center">{{ user_details.email }}</p></th>
+                </tr>
+                </table>   
+            <input type="submit" value="Submit" />
+        </form>
+        <a href="{% url 'edit-user-password' user_details.id  %}">Change your password</a>
+    {% elif page == 'updatePassword'  %}
+        <form method="POST" action="">
+            {% csrf_token %}
+            <table>
+            <tr>   
+            <th><p align="left"><label>Enter the old password:</label></p></th>
+            <th><p align="right"><input type="password" name="oldPassword" placeholder="Old Password" /></p></th>
+            </tr>
+            <tr>
+            <th><p align="left"><label>New password:</label></p></th>
+            <th><p align="right"><input type="password" name="password" placeholder="New Password" /></p></th>
+            </tr>
+            <tr>  
+            <th><p align="left"><label>Confirm new password:</label></p></th>
+            <th><p align="right"><input type="password" name="confirmPassword" placeholder="Confirm Password" /></p></th>
+            </tr>
+            </table>     
+            <input type="submit" value="Submit" />
+            {% if update_message != None %}
+                {{ update_message }}
+            {% endif %}
+        </form>   
+    {% endif %}
+        
+
+
+
+        
+    
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1> {{user_details.username}}'s User Profile </h1>
+
+<style>
+    .webpage{
+        display: grid;
+        grid-template-rows: 9fr 1fr;
+
+    }
+    .userProfileContainer {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr ;
+    }
+</style>
+
+<div class="webpage">
+
+    <div class="userProfileContainer">
+        
+        <div class="roomsContainer">
+            <hr>
+            <h2>{{user_details.username}}'s Rooms</h2>
+            <hr>
+            {% for room in rooms %}
+             <h3><a href="{% url 'room' room.id %}">{{room.name}}</a></h3>
+            {% endfor %}
+        </div>
+
+        <div class="userSubProfileContainer">
+        <hr>
+        <h2>@{{user_details.username}}</h2>
+        <hr>
+        <h4>{{user_details.first_name}} {{user_details.last_name}}</h4>
+         <p>
+            {{user_details.first_name}} joined us on {{user_details.date_joined|timesince}} ago.
+         </p>   
+        
+        </div>
+
+        <div class="recentActivity">
+            {% include "base/activity_feed.html" %}
+        </div>
+    </div>
+
+
+    <div class=footerContainer>
+        <hr>
+        <h3>Footer</h3>
+    </div>
+</div>
+
+
+{% endblock %}

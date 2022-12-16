@@ -7,9 +7,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from .forms import RoomForm
+from .forms import RoomForm, MessageForm, UserForm
 from django.db.models import Q
 from django.template import loader
+from passlib.hash import pbkdf2_sha256
 
 # Create your views here.
 
@@ -57,9 +58,7 @@ def registerPage(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            print(user)
             user.username = user.username.lower()
-            print(user)
             form.save()
             login(request, user)
             return redirect(home)
@@ -128,9 +127,7 @@ def updateRoom(request, pk):
     
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
-    print(request.user.is_superuser)
-    print(request.user)
-    print(room.host)
+
     if request.user==room.host or request.user.is_superuser==1:
 
         if request.method =='POST':
@@ -173,3 +170,61 @@ def deleteComment(request, pk):
     
     else:
         return redirect('notAuthorized')
+
+@login_required(login_url='login')
+def userProfile(request, pk):
+    user_details = User.objects.get(id=pk)
+    rooms = user_details.room_set.all().order_by('created')
+    topics = Topic.objects.all()
+    room_messages = user_details.messages_set.all()
+    context =  { 'user_details': user_details, 'rooms': rooms, 'topics': topics, 'room_messages': room_messages }
+    return render(request, 'base/user_profile.html', context)
+
+@login_required(login_url='login')
+def userEditProfile(request, pk):
+    page = 'updateSettings'
+    request.user.id == pk
+    user_details = User.objects.get(id=pk)
+
+    print(user_details.email)
+
+    if request.method =='POST':
+        update_userSettings = User.objects.update(
+            username = request.POST.get('username'),
+            first_name = request.POST.get('firstname'),
+            last_name = request.POST.get('firstname'),
+            email = request.POST.get('email')
+            )
+        return redirect('home')
+
+    context = { 'page': page, 'user_details': user_details }
+    return render(request, 'base/edit_user_profile.html', context)
+
+@login_required(login_url='login')
+def userEditPassword(request, pk):
+    page = 'updatePassword'
+    request.user.id == pk
+    user_details = User.objects.get(id=pk)
+
+
+    if request.method =='POST':
+        print(request.POST.get('password'))
+        print(request.POST.get('confirmPassword'))
+        if request.POST.get('oldPassword') == user_details.password:
+            if request.POST.get('password') == request.POST.get('confirmPassword'):
+                update_password = User.objects.update(password = request.POST.get('password'))
+                return redirect('home')
+            else:
+                update_message = 'New password and Confirm password do not match'
+                context = { 'page': page, 'update_message': update_message }
+                return render(request, 'base/edit_user_profile.html', context)
+        else:
+            update_message = 'Old password is incorrect'
+            context = { 'page': page, 'update_message': update_message }
+            return render(request, 'base/edit_user_profile.html', context)
+
+    context = { 'page': page }
+    return render(request, 'base/edit_user_profile.html', context)
+
+
+

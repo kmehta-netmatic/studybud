@@ -39,7 +39,7 @@
             <div>
                 <h5><a href="{% url 'edit-room' room.id %}">Edit Room</a> &nbsp; <a href="{% url 'delete-room' room.id %}">Delete Room</a></h5>
                 <h2> <a href="{% url 'room' room.id %}">{{room.name}}</a></h2>
-                <span>Created by: @{{room.host.username}}/{{room.host.email}}</span>
+                <span>Created by: <a href="{% url 'user-profile' room.host.id %}">@{{room.host.username}}</a>/{{room.host.email}}</span>
                 <span>
                     {% if room.host.is_superuser == 1 %} 
                         {{room.host.username}} is a Super User
